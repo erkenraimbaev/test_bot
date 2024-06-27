@@ -4,14 +4,21 @@ from aiogram import Router
 from aiogram.enums import ChatAction
 from aiogram.filters import CommandStart, Command, CommandObject
 from aiogram.types import Message
-from magic_filter import F
+from aiogram import F
 
 router = Router()
+
+
+@router.message(Command('any'))
+async def command_for_channel(message: Message):
+    await message.bot.send_dice(chat_id=message.chat.id, emoji='joy')
+    # message_thread_id=message.message_thread_id, - если нужно отправить в тред
 
 
 @router.message(CommandStart())
 async def cmd_start(message: Message):
     await message.bot.send_chat_action(chat_id=message.from_user.id, action=ChatAction.TYPING)
+    await message.bot.send_dice(chat_id=message.chat.id, emoji=':joy:')
     await asyncio.sleep(2)
     await message.reply('Привет!')
     await message.answer(text='Hello baby')
@@ -30,10 +37,24 @@ async def cmd_start(message: Message):
 #                                caption='Лучший курс по aiogram!')
 
 
+@router.message(F.document)
+async def get_sticker(message: Message):
+    await message.answer(f'{message.document.file_id}')
+
+
+@router.message(F.text == 's')
+async def send_sticker(message: Message):
+    stickers = ('CAACAgIAAxkBAAEMYKtme8WqZc6JfubiUo6B4BSZUa3qiwACDQADwDZPE6T54fTUeI1TNQQ',
+                'CAACAgIAAxkBAAEMYKlme8UIpch10mXVCMo2fO_LkthY-wACAQADwDZPExguczCrPy1RNQQ',
+                'CAACAgIAAxkBAAEMYK1me8WyY5HX1rTwhwLbdCtzjlCrxgACCgADwDZPE_8Nrj7oDv0INQQ')
+    for stick in stickers:
+        await message.answer_sticker(sticker=stick, emoji='😄')
+
+
 @router.message(F.photo)
 async def get_photo(message: Message):
     await message.answer(f'ID: {message.photo[-1].file_id}')
-    print(message.photo[-1].__dict__)
+    # print(message.photo[-1].__dict__)
 
 
 @router.message(Command('help'))
