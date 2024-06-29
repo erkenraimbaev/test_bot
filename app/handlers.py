@@ -21,7 +21,7 @@ async def cmd_start(message: Message):
     await message.bot.send_chat_action(chat_id=message.from_user.id, action=ChatAction.TYPING)
     # await message.bot.send_dice(chat_id=message.chat.id, emoji='joy')
     await asyncio.sleep(2)
-    await message.reply('Привет!')
+    await message.reply(text='Привет!', reply_markup=kb.main_inline)
     await message.answer(text='Бот поможет Вам решить несколько задач.'
                               'При вводе команды используйте /'
                               'Команда /help ', reply_markup=kb.main)
