@@ -5,6 +5,7 @@ from aiogram.enums import ChatAction
 from aiogram.filters import CommandStart, Command, CommandObject
 from aiogram.types import Message
 from aiogram import F
+import app.keybords as kb
 
 router = Router()
 
@@ -18,10 +19,32 @@ async def command_for_channel(message: Message):
 @router.message(CommandStart())
 async def cmd_start(message: Message):
     await message.bot.send_chat_action(chat_id=message.from_user.id, action=ChatAction.TYPING)
-    await message.bot.send_dice(chat_id=message.chat.id, emoji=':joy:')
+    # await message.bot.send_dice(chat_id=message.chat.id, emoji='joy')
     await asyncio.sleep(2)
     await message.reply('Привет!')
-    await message.answer(text='Hello baby')
+    await message.answer(text='Бот поможет Вам решить несколько задач.'
+                              'При вводе команды используйте /'
+                              'Команда /help ', reply_markup=kb.main)
+
+
+@router.message(F.text == 'Каталог')
+async def get_catalog(nessage: Message):
+    await nessage.answer(f'Здесь будут хрустящие фрипсы и полезная пастила')
+
+
+@router.message(F.text == 'Корзина')
+async def get_catalog(nessage: Message):
+    await nessage.answer(f'Пока тут пусто')
+
+
+@router.message(F.text == 'Контакты')
+async def get_catalog(message: Message):
+    text = ('Наш адрес: Екатеринбург, улица Ленина д.1 офис 255.',
+            'Электронная почта: fripsy_pastila@mail.ru',
+            'Группа в телеграм: https://t.me/',
+            'Телефон: +79221514205')
+    for line in text:
+        await message.answer(line)
 
 
 # @router.message(CommandStart(deep_link=True, magic=F.args.isdigit()))
